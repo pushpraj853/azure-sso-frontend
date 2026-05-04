@@ -85,7 +85,7 @@ export default function AdminTenants() {
             <div className="form-group">
               <label>Allowed Domains</label>
               <input value={form.allowedDomains} onChange={e => setForm(f => ({ ...f, allowedDomains: e.target.value }))} placeholder="contoso.com, contoso.onmicrosoft.com" />
-              <small>Comma-separated. Used for informational display only.</small>
+              <small>Comma-separated. Used to route dedicated SSO when the user enters an email on the login page.</small>
             </div>
 
             <div className="form-group">

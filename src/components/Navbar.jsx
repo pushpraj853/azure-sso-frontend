@@ -1,9 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
-  const { user, login, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const onLoginScreen = pathname === '/login' || pathname === '/auth/callback';
 
   const handleLogout = async () => {
     await logout();
@@ -12,7 +14,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <Link to="/login" className="navbar-brand">
+      <Link to={user ? '/dashboard' : '/login'} className="navbar-brand">
         <div className="brand-logo">A</div>
         <span>Acme Corp</span>
       </Link>
@@ -24,11 +26,12 @@ export default function Navbar() {
             <div className="nav-avatar" title={user.email}>
               {user.name?.split(' ').map(p => p[0]).join('').slice(0, 2)}
             </div>
-            <button className="btn-ghost" onClick={handleLogout}>Sign out</button>
+            <button type="button" className="btn-ghost" onClick={handleLogout}>Sign out</button>
           </>
         ) : (
-          /* Directly triggers Microsoft SSO — not just a link to /login */
-          <button className="btn-primary-sm" onClick={() => login()}>Sign in</button>
+          !onLoginScreen && (
+            <Link to="/login" className="btn-primary-sm">Sign in</Link>
+          )
         )}
       </div>
     </nav>

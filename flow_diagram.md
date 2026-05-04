@@ -159,8 +159,8 @@ User                Frontend              Backend               Microsoft Azure
  │                      │                      │ by allowedDomains →    │
  │                      │                      │ ✅ FOUND: Contoso Ltd. │
  │                      │                      │ mode: "dedicated"      │
- │                      │                      │ tenantId: "mock-cont." │
- │                      │                      │ clientId: "mock-cont." │
+ │                      │                      │ tenantId: "<Contoso GUID>" │
+ │                      │                      │ clientId: "<Contoso app client id>" │
  │                      │                      │                        │
  │                      │                      │ builds URL using       │
  │                      │                      │ CONTOSO's credentials: │
@@ -227,53 +227,20 @@ User                Frontend              Backend               Microsoft Azure
 Welcome back, Sarah 👋
 Authenticated via: Contoso Ltd.   ← their brand color
 SSO Mode: Dedicated (client secrets) | 🟢 Real Azure
-Tenant ID (tid): mock-contoso-tid-9f3a2b1c
+Tenant ID (tid): <Azure Entra tenant GUID>
 ```
 
 ---
 
-## Scenario 4 — Mock Mode (No Azure, Local Dev)
+## Scenario 4 — (removed)
 
-**Who:** Developer testing locally without real Azure credentials.
-**Example:** Running with `AZURE_MODE=` (empty) in .env.
-
-```
-User                Frontend              Backend               Mock Azure Page
- │                     │                     │                  (served by backend)
- │  clicks "Sign in"    │                     │                        │
- │─────────────────────►│                     │                        │
- │                      │ GET /auth/login      │                        │
- │                      │─────────────────────►│                        │
- │                      │                      │ AZURE_MODE != "real"   │
- │                      │                      │ → redirect to          │
- │                      │                      │ /auth/mock-azure       │
- │◄─────────────────── redirect to :3001/auth/mock-azure ─────────────  │
- │                                                                       │
- │ GET /auth/mock-azure  │                      │                        │
- │──────────────────────────────────────────────────────────────────────►│
- │◄──── HTML: fake Microsoft login page with 4 hardcoded accounts ──────│
- │                                                                       │
- │  User picks: Sarah Chen (s.chen@contoso.com)                         │
- │──────────────────────────────────────────────────────────────────────►│
- │                      │                      │                        │
- │ GET /auth/mock-select?userId=contoso-user-001                         │
- │─────────────────────────────────────────────►│                        │
- │                      │                      │ finds user in           │
- │                      │                      │ mockUsers.json          │
- │                      │                      │ reads their tenantId    │
- │                      │                      │ looks up tenants.json   │
- │                      │                      │ creates mock JWT        │
- │                      │                      │ saves to session        │
- │◄─── redirect to /auth/callback?success=true ──────────────────────  │
- │─────────────────────►│                       │                        │
- │   → /dashboard        │                       │                        │
-```
+Local mock sign-in and simulated Microsoft pages were removed. Every environment uses real Microsoft Entra ID (`login.microsoftonline.com`) with app registration credentials from `.env` and optional dedicated tenants in `tenants.json`.
 
 ---
 
 ## The Token — What's Inside (JWT Decoded)
 
-Every successful login produces a JWT that Microsoft (or mock) issues.
+Every successful login produces a JWT that Microsoft issues.
 Your backend decodes this without verifying signature — Azure already did that.
 
 ```
@@ -301,7 +268,7 @@ JWT Structure:
 ┌─────────────────────────────────────────────────────────┐
 │                 tenants.json lookup                      │
 │                                                         │
-│  tid = "mock-contoso-tid-9f3a2b1c"                     │
+│  tid = "f6b4e700-728c-4526-…"   (example Entra tenant GUID) │
 │           ↓                                             │
 │  [search tenants where tenantId === tid]                │
 │           ↓                                             │
@@ -396,15 +363,12 @@ azure-setup/
 │   └── src/
 │       ├── server.js                  → sets up express, cors, session
 │       ├── routes/auth.js             → /auth/login, /auth/callback, /auth/me, /auth/logout
-│       │                                 /auth/mock-azure, /auth/mock-select
 │       ├── routes/tenants.js          → GET/POST/PUT/DELETE /api/tenants
-│       ├── services/tenantStore.js    → reads/writes tenants.json
-│       ├── services/mockAzure.js      → generates fake MS login HTML
-│       ├── services/tokenService.js   → JWT create/verify/decode
-│       ├── tenants.json               → client registry (Contoso, Fabrikam, ...)
-│       └── mockUsers.json             → fake users for mock mode
+│       ├── services/tenantStore.js    → reads/writes tenants.json, domain + OAuth helpers
+│       ├── services/tokenService.js   → decode Azure ID token payload
+│       └── tenants.json               → client registry (add via Admin UI)
 │
-└── .env                               → AZURE_MODE, ACME_TENANT_ID/CLIENT_ID/SECRET
+└── .env                               → SESSION_SECRET, ACME_TENANT_ID/CLIENT_ID/SECRET, URLs
 ```
 
 ---
@@ -422,14 +386,13 @@ After successful login:
       name: "Sarah Chen",
       email: "s.chen@contoso.com",
       preferred_username: "s.chen@...",
-      tid: "mock-contoso-tid-9f3a2b1c",  Azure tenant ID
+      tid: "<Entra tenant GUID>",       Azure tenant ID
       tenantDisplayName: "Contoso Ltd.", resolved from tenants.json
       tenantMode: "dedicated",           standard | dedicated
       brandColor: "#0078D4",             from tenants.json
       jobTitle: "Software Engineer",
-      isMock: false                      true if mock mode
     },
-    token: "eyJ..."                      actual token (JWT or mock)
+    token: "eyJ..."                      Microsoft access_token
   }
 
 After logout:
@@ -513,39 +476,29 @@ azure-setup/
 �       +-- routes/
 �       �   +-- auth.js                ? /auth/login (email domain routing + login_hint)
 �       �   �                             /auth/callback, /auth/me, /auth/logout
-�       �   �                             /auth/mock-azure, /auth/mock-select
 �       �   +-- tenants.js             ? requireAuth on ALL routes
 �       �                                 GET/POST/PUT/DELETE /api/tenants
 �       +-- services/
 �       �   +-- tenantStore.js         ? readFileSync every call � no cache
-�       �   +-- mockAzure.js           ? fake MS login HTML (mock mode only)
-�       �   +-- tokenService.js        ? JWT helpers
+�       �   +-- tokenService.js        ? decode Azure ID token
 �       +-- tenants.json               ? grows as clients are added via Admin UI
-�       +-- mockUsers.json             ? mock mode only
++-- .env                               ? SESSION_SECRET, ACME credentials, URLs
 �
-+-- .env                               ? AZURE_MODE, ACME credentials
 ```
 
 ---
 
 ## What "Admin Login" Means
 
-In this app there is **no separate admin account type**. Any Microsoft account can log in.
-The difference is purely **where you land after login**.
-
-```
-[Sign in with Microsoft]          ?  after login ? /dashboard
-[Admin: Sign in with Microsoft]   ?  after login ? /admin/tenants
-```
-
-The admin button is a convenience shortcut � same Microsoft SSO, same token, same session.
-The only difference is a `next=/admin/tenants` flag carried through the flow.
+There is **no separate admin account type**. Any Microsoft account can sign in once, then open **Client tenants** from the dashboard or nav to manage tenant records via the API.
 
 ---
 
-## Scenario 6 � Admin Login Flow (next param)
+## Scenario 6 — Deep link: `next` query (optional)
 
-**Who:** A developer or company admin who wants to manage client SSO configs.
+**Who:** A developer or company admin who wants to land on `/admin/tenants` immediately after SSO.
+
+**Note:** The login page has one Microsoft sign-in. Open `/auth/login?next=/admin/tenants` (and optionally `email`) to land in Admin after Microsoft redirects back.
 
 ```
 User (Admin)         Frontend              Backend               Microsoft
