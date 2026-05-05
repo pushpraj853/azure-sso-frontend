@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 const AuthContext = createContext(null);
-const API = "http://localhost:3001";
+const API = "https://azure-sso-backend.onrender.com";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
