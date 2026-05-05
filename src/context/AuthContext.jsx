@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 const AuthContext = createContext(null);
-const API = 'http://localhost:3001';
+const API = "http://localhost:3001";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -9,7 +9,8 @@ export function AuthProvider({ children }) {
 
   const fetchMe = useCallback(async () => {
     try {
-      const res = await fetch(`${API}/auth/me`, { credentials: 'include' });
+      const res = await fetch(`${API}/auth/me`, { credentials: "include" });
+
       if (res.ok) setUser(await res.json());
       else setUser(null);
     } catch {
@@ -19,18 +20,20 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  useEffect(() => { fetchMe(); }, [fetchMe]);
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   const login = (email, next) => {
     const params = new URLSearchParams();
-    if (email) params.set('email', email);
-    if (next)  params.set('next', next);
+    if (email) params.set("email", email);
+    if (next) params.set("next", next);
     const qs = params.toString();
-    window.location.href = `${API}/auth/login${qs ? '?' + qs : ''}`;
+    window.location.href = `${API}/auth/login${qs ? "?" + qs : ""}`;
   };
 
   const logout = async () => {
-    await fetch(`${API}/auth/logout`, { method: 'POST', credentials: 'include' });
+    await fetch(`${API}/auth/logout`, { method: "POST", credentials: "include" });
     setUser(null);
   };
 
