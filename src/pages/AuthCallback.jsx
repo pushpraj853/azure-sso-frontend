@@ -10,15 +10,13 @@ export default function AuthCallback() {
   useEffect(() => {
     const success = params.get('success');
     const error = params.get('error');
-    const next = params.get('next') || '/dashboard';
-
     if (error) {
       navigate(`/login?error=${encodeURIComponent(error)}`);
       return;
     }
 
     if (success) {
-      refetch().then(() => navigate(next));
+      refetch().then(() => navigate('/dashboard'));
       return;
     }
 

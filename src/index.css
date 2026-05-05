@@ -83,8 +83,6 @@ code { font-family: monospace; font-size: 12px; background: #eee; padding: 1px 4
 .login-security { font-size: 11px; color: #aaa; text-align: center; }
 
 .label-optional { color: #aaa; font-weight: 400; }
-.login-admin-hint { font-size: 12px; color: #888; text-align: center; margin-top: 16px; line-height: 1.5; }
-.login-admin-hint a { color: #0066cc; }
 
 /* Form */
 .form-group { margin-bottom: 14px; }
@@ -132,51 +130,8 @@ code { font-family: monospace; font-size: 12px; background: #eee; padding: 1px 4
 .dash-card-label { color: #888; font-weight: 600; }
 .dash-card-value { word-break: break-word; }
 .dash-mono { font-family: ui-monospace, monospace; font-size: 12px; color: #0066cc; background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
-.dash-card-footer { margin-top: 18px; padding-top: 14px; border-top: 1px solid #eee; text-align: center; }
-.dash-card-link { font-size: 13px; font-weight: 500; color: #0066cc; }
-.dash-card-link:hover { text-decoration: underline; }
-
-/* Admin */
-.admin-page { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
-.admin-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-.admin-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.admin-header p { font-size: 13px; color: #555; }
-
-.tenant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; }
-.tenant-card { background: #fff; border: 1px solid #ddd; border-top: 3px solid; border-radius: 6px; padding: 18px; }
-.tenant-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-.tenant-card-header h3 { font-size: 15px; font-weight: 700; flex: 1; }
-.tenant-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.mode-badge { font-size: 11px; padding: 2px 8px; border-radius: 3px; font-weight: 600; border: 1px solid; }
-.mode-badge.dedicated { background: #fff8e1; color: #b45309; border-color: #fde68a; }
-.mode-badge.standard  { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
-.tenant-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; font-size: 13px; }
-.tenant-meta > div { display: flex; gap: 8px; align-items: flex-start; }
-.tenant-meta > div > span:first-child { color: #888; min-width: 68px; flex-shrink: 0; }
-.tenant-meta code { font-size: 11px; word-break: break-all; background: #f5f5f5; padding: 1px 4px; border-radius: 3px; }
-.tenant-card-actions { display: flex; gap: 8px; }
-.empty-state { grid-column: 1/-1; text-align: center; padding: 40px; color: #888; border: 1px dashed #ddd; border-radius: 6px; }
-
-/* Modal */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 200; padding: 24px;
-}
-.modal-card {
-  background: #fff; border: 1px solid #ddd; border-radius: 8px;
-  padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto;
-}
-.modal-card h2 { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.color-input-row { display: flex; gap: 8px; align-items: center; }
-.color-input-row input[type="color"] { width: 40px; height: 34px; padding: 2px; border-radius: 4px; cursor: pointer; flex-shrink: 0; }
-.form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
-.status-ok  { color: green; font-size: 12px; text-align: center; margin-top: 8px; }
-.status-err { color: red;   font-size: 12px; text-align: center; margin-top: 8px; }
 
 /* Responsive */
 @media (max-width: 600px) {
-  .form-row { grid-template-columns: 1fr; }
   .dash-card-row { grid-template-columns: 1fr; gap: 4px; }
 }

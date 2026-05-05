@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function Row({ label, children }) {
@@ -52,10 +52,6 @@ export default function Dashboard() {
           <Row label="Tenant ID (tid)"><code className="dash-mono">{user.tid}</code></Row>
           <Row label="Object ID (oid)"><code className="dash-mono">{user.oid}</code></Row>
         </div>
-
-        <footer className="dash-card-footer">
-          <Link to="/admin/tenants" className="dash-card-link">Manage client tenants</Link>
-        </footer>
       </article>
     </div>
   );

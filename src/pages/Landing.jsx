@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import MicrosoftButton from '../components/MicrosoftButton';
 import { useAuth } from '../context/AuthContext';
 
@@ -19,7 +18,6 @@ export default function Landing() {
         </p>
         <div className="hero-cta">
           <MicrosoftButton onClick={login} />
-          <Link to="/admin/tenants" className="btn-ghost-outline">Admin Panel →</Link>
         </div>
         <p className="hero-note">
           Supports multi-tenant SSO. Clients can configure dedicated Azure AD credentials.
@@ -39,8 +37,8 @@ export default function Landing() {
         </div>
         <div className="feature-card">
           <div className="feature-icon">⚡</div>
-          <h3>Zero-Code Onboarding</h3>
-          <p>Add a new client tenant through the Admin UI — no restarts, no deployments, no code changes.</p>
+          <h3>Fast provisioning</h3>
+          <p>Map organizations to your app’s tenant registry as you grow — no app restarts for new IdP links.</p>
         </div>
       </section>
 

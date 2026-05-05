@@ -5,7 +5,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AuthCallback from './pages/AuthCallback';
-import AdminTenants from './pages/AdminTenants';
 import './index.css';
 
 export default function App() {
@@ -23,9 +22,6 @@ export default function App() {
             {/* Protected routes — redirect to /login if no session */}
             <Route path="/dashboard" element={
               <ProtectedRoute><Dashboard /></ProtectedRoute>
-            } />
-            <Route path="/admin/tenants" element={
-              <ProtectedRoute><AdminTenants /></ProtectedRoute>
             } />
           </Routes>
         </main>
