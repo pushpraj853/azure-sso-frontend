@@ -16,7 +16,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) navigate('/login');
+    if (!loading && !user) navigate('/login', { replace: true });
   }, [user, loading, navigate]);
 
   if (loading || !user) {

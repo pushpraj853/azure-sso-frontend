@@ -9,7 +9,8 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    // Replace history so "Back" cannot return to protected routes after session ends
+    navigate('/login', { replace: true });
   };
 
   return (

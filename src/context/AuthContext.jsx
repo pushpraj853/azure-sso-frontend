@@ -24,6 +24,15 @@ export function AuthProvider({ children }) {
     fetchMe();
   }, [fetchMe]);
 
+  // BFCache can restore a tab with stale React state; re-validate the session
+  useEffect(() => {
+    const onPageShow = (e) => {
+      if (e.persisted) fetchMe();
+    };
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, [fetchMe]);
+
   const login = (email, next) => {
     const params = new URLSearchParams();
     if (email) params.set("email", email);
